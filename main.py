@@ -49,7 +49,7 @@ def get_address():
 
 @app.route('/', methods = ["POST"])
 def post_address():
-   return 
+   return ""
 
 
 
