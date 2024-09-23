@@ -2,16 +2,21 @@ import pandas as pd
 import numpy as np
 from flask import Flask
 
-app = Flask.__name__
+
+app = Flask(__name__)
 df = pd.read_csv('addresses.csv')
 
 
-address = "42 Fairhaven Commons Way"
-city = "Fairhaven"
-state = "MA"
-zip = 2719
+address1 = "42 Fairhaven Commons Way"
+city1 = "Fairhaven"
+state1 = "MA"
+zip1 = 2719
 
-def address_search():
+def address_search(address, city, state, zip):
+   address = "42 Fairhaven Commons Way"
+   city = "Fairhaven"
+   state = "MA"
+   zip = 2719
    #boolean checks to make sure that the city, state, address, and zip are present in dataset
    city_check = df['city'].eq(city).any()
    address_check = df['address'].eq(address).any()
@@ -30,10 +35,24 @@ def address_search():
       formatted_zip = str([zip])
    
       if not ((city_comparison == "['" + city + "']") and (state_comparison == "['" + state + "']") and (zip_comparison == formatted_zip)):
-         print ("Ambiguous address information submitted. Multiple records found. Please double check information and resubmit")
+         return ("Ambiguous address information submitted. Multiple records found. Please double check information and resubmit")
       else:
-         print("Found at index: " + str(address_index))
+         return ("Found at index: " + str(address_index))
    else:
-      print ('Address not found')
+      return ('Address not found')
         
-address_search()
+# Flask
+@app.route('/')
+def get_address():
+   results = address_search(address1, city1, state1, zip1)
+   return results
+
+@app.route('/', methods = ["POST"])
+def post_address():
+   return 
+
+
+
+
+if __name__ == "__main__":
+    app.run()
