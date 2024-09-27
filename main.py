@@ -1,4 +1,5 @@
 import pandas as pd
+import csv
 import numpy as np
 from flask import Flask
 
@@ -13,10 +14,15 @@ state1 = "MA"
 zip1 = 2719
 
 def address_search(address, city, state, zip):
-   address = "42 Fairhaven Commons Way"
-   city = "Fairhaven"
-   state = "MA"
-   zip = 2719
+   if address == None:
+      raise Exception("Address cannot be empty")
+   if city == None:
+      raise Exception("City cannot be empty")
+   if state == None:
+      raise Exception("State cannot be empty")
+   if zip == None:
+      raise Exception("Zip cannot be empty")
+   
    #boolean checks to make sure that the city, state, address, and zip are present in dataset
    city_check = df['city'].eq(city).any()
    address_check = df['address'].eq(address).any()
@@ -37,22 +43,29 @@ def address_search(address, city, state, zip):
       if not ((city_comparison == "['" + city + "']") and (state_comparison == "['" + state + "']") and (zip_comparison == formatted_zip)):
          return ("Ambiguous address information submitted. Multiple records found. Please double check information and resubmit")
       else:
-         return ("Found at index: " + str(address_index))
+         return (df.iloc[address_index].to_string())
    else:
       return ('Address not found')
+   
+def add_address(address, city, state, zip):
+   if address == None:
+      raise Exception("Address cannot be empty")
+   if city == None:
+      raise Exception("City cannot be empty")
+   if state == None:
+      raise Exception("State cannot be empty")
+   if zip == None or zip == "":
+      raise Exception("Zip cannot be empty")
+   df.loc[len(df.index)] = [address1, city1, state1, zip1]
+   print(len(df))
+
         
 # Flask
-@app.route('/')
-def get_address():
-   results = address_search(address1, city1, state1, zip1)
-   return results
-
-@app.route('/', methods = ["POST"])
-def post_address():
-   return ""
+# @app.route('/')
+# def get_address():
+#    results = add_address(address1, city1, state1, zip1)
+#    return results
 
 
-
-
-if __name__ == "__main__":
-    app.run()
+# if __name__ == "__main__":
+#     app.run()
